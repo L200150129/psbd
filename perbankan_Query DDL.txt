@@ -1,0 +1,42 @@
+create table nasabah(
+id_nasabah integer primary key,
+nama_nasabah varchar(45) not null,
+alamat_nasabah varchar(255) not null
+);
+
+
+create table cabang_bank(
+kode_cabang varchar(20) primary key,
+nama_cabang varchar(45) unique not null,
+alamat_cabang varchar(255) not null
+);
+
+
+create table rekening(
+no_rekening integer primary key,
+kode_cabangFK varchar(20) references cabang_bank(kode_cabang)
+on delete cascade on update cascade,
+pin varchar(20) default '1234' not null,
+saldo integer default 0 not null
+);
+
+
+create table transaksi(
+no_transaksi serial primary key,
+id_nasabahFK integer references nasabah(id_nasabah)
+on delete set null on update cascade,
+no_rekeningFK integer references rekening(no_rekening)
+on delete set null on update cascade,
+jenis_transaksi varchar(20) default 'debit' not null,
+tanggal datetime not null default current_timestamp,
+jumlah integer not null check(jumlah>=20000)
+);
+
+
+create table nasabah_has_rekening(
+id_nasabahFK integer references nasabah(id_nasabah) 
+on delete cascade on update cascade,
+no_rekeningFK integer references rekening(no_rekening) 
+on delete cascade on update cascade,
+primary key(id_nasabahFK,no_rekeningFK)
+);
